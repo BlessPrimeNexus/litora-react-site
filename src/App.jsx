@@ -1,33 +1,12 @@
 import { useEffect, useState } from 'react';
 
-const APK_URL = 'https://github.com/';
-const VERSION = '1.0.0';
+// Pour que le bouton marche sans toucher au code : dans GitHub > Releases, publiez une release
+// et ajoutez-y l'APK sous le nom « litora.apk ». Ce lien pointe toujours vers la dernière version.
+const APK_URL = 'https://github.com/BlessPrimeNexus/litora-react-site/releases/latest/download/litora.apk';
 const CONTACT = 'contact.nexoralabss@gmail.com';
 
-const FEATURES = [
-  { icon: '📖', title: 'Lire', text: 'Un lecteur confortable : taille, police et thème au choix, reprise automatique et lecture hors ligne.' },
-  { icon: '✍️', title: 'Publier', text: 'Écrivez dans un éditeur soigné, ou importez un EPUB ou un PDF vérifié avant publication.' },
-  { icon: '🔎', title: 'Découvrir', text: 'Genres, tendances, recommandations et recherche par titre, auteur ou série.' },
-  { icon: '💬', title: 'Échanger', text: 'Abonnez-vous aux auteurs, commentez, réagissez et recevez les nouveautés.' },
-  { icon: '📊', title: 'Suivre', text: 'Votre bibliothèque, vos collections, votre progression et vos statistiques.' },
-  { icon: '🛡️', title: 'Protéger', text: 'Signalements, blocage et règles claires pour un espace sûr et respectueux des droits d’auteur.' },
-];
-
-const READER_POINTS = [
-  'Thèmes papier, blanc, sépia et nuit',
-  'Marque-pages et sommaire',
-  'Lecture hors ligne des livres téléchargés',
-  'Enregistrement du livre en EPUB sur votre téléphone',
-];
-
-const STEPS = [
-  { n: '1', title: 'Écrivez', text: 'Créez votre livre, ajoutez vos chapitres, programmez leur publication.' },
-  { n: '2', title: 'Publiez', text: 'Chaque chapitre apparaît dans le fil de vos abonnés et dans la découverte.' },
-  { n: '3', title: 'Analysez', text: 'Lectures, progression des lecteurs et réactions dans votre tableau de bord.' },
-];
-
-const SOCIALS = [
-  ['E-mail', `mailto:${CONTACT}`],
+const LINKS = [
+  ['Contact', `mailto:${CONTACT}`],
   ['WhatsApp', 'https://wa.me/243822993775'],
   ['Instagram', 'https://www.instagram.com/justmeblessingdev11'],
   ['Facebook', 'https://www.facebook.com/justmeblessingdev11'],
@@ -35,265 +14,217 @@ const SOCIALS = [
   ['YouTube', 'https://youtube.com/@blessprime_nexora'],
 ];
 
-function useTheme() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('litora-theme') || '');
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    if (theme) localStorage.setItem('litora-theme', theme);
-  }, [theme]);
-  const toggle = () =>
-    setTheme((t) => {
-      const dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return dark ? 'light' : 'dark';
-    });
-  return [theme, toggle];
-}
+const FEATURES = [
+  { icon: 'book', title: 'Lire', text: 'Comme dans un vrai livre, même hors ligne.' },
+  { icon: 'pen', title: 'Écrire', text: 'Publiez vos histoires, chapitre par chapitre.' },
+  { icon: 'users', title: 'Partager', text: 'Suivez vos auteurs, commentez, réagissez.' },
+];
 
-function useReveal() {
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('in');
-            io.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.12 }
-    );
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-}
+const PATHS = {
+  book: <><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z" /><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z" /></>,
+  pen: <><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" /></>,
+  users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.9" /><path d="M16 3.1a4 4 0 0 1 0 7.8" /></>,
+  home: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M9 22V12h6v10" /></>,
+  compass: <><circle cx="12" cy="12" r="10" /><path d="M16.2 7.8l-2.1 6.3-6.3 2.1 2.1-6.3z" /></>,
+  library: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>,
+  user: <><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>,
+  bell: <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" /></>,
+  download: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M7 10l5 5 5-5" /><path d="M12 15V3" /></>,
+};
 
-function Nav({ onToggleTheme }) {
+function Icon({ name, size = 22 }) {
   return (
-    <header className='nav'>
-      <a className='brand' href='#top' aria-label='LITORA accueil'>
-        <img src='/litora-icon.svg' alt='' width='36' height='36' />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {PATHS[name]}
+    </svg>
+  );
+}
+
+function useRoute() {
+  const read = () => (window.location.hash === '#/legal' ? 'legal' : 'home');
+  const [route, setRoute] = useState(read);
+  useEffect(() => {
+    const on = () => {
+      setRoute(read());
+      if (window.location.hash === '#/legal' || window.location.hash === '#/' || window.location.hash === '') window.scrollTo(0, 0);
+    };
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  return route;
+}
+
+function Nav() {
+  return (
+    <header className="nav">
+      <a className="brand" href="#/" aria-label="LITORA">
+        <img src="/litora-icon.png" alt="" width="34" height="34" />
         <span>LITORA</span>
       </a>
-      <nav className='links' aria-label='Navigation principale'>
-        <a href='#fonctions'>Fonctionnalités</a>
-        <a href='#auteurs'>Auteurs</a>
-        <a href='#telecharger'>Télécharger</a>
-        <a href='#mayelia'>Mayelia</a>
-      </nav>
-      <div className='nav-actions'>
-        <button className='icon-btn' type='button' onClick={onToggleTheme} aria-label='Changer de thème'>◐</button>
-        <a className='btn btn-small' href='#telecharger'>Télécharger</a>
-      </div>
+      <a className="btn btn-amber btn-sm" href={APK_URL}>Télécharger</a>
     </header>
   );
 }
 
-function Hero() {
+function Cover({ className, lines }) {
   return (
-    <section className='hero'>
-      <div className='hero-text reveal'>
-        <p className='eyebrow'>Une bibliothèque sociale</p>
-        <h1>
-          Lisez. Écrivez. <em>Rencontrez</em> vos lecteurs.
-        </h1>
-        <p className='lead'>
-          LITORA réunit lecteurs et auteurs dans une même application : des histoires à lire confortablement, des livres à publier chapitre par chapitre, et une communauté qui réagit, commente et suit.
-        </p>
-        <div className='hero-cta'>
-          <a className='btn btn-primary' href='#telecharger'>Télécharger l'application</a>
-          <a className='btn btn-ghost' href='#fonctions'>Découvrir</a>
-        </div>
-        <p className='slogan'>READ. WRITE. CONNECT.</p>
-      </div>
-      <div className='hero-visual reveal' aria-hidden='true'>
-        <div className='phone'>
-          <div className='phone-top'>
-            <span className='dot' />
-            <span className='pill'>Accueil</span>
-          </div>
-          <div className='card-book'>
-            <span className='cover cv1' />
-            <div><b>Les saisons de Léa</b><small>Un roman · 3 chapitres</small></div>
-          </div>
-          <div className='card-book c2'>
-            <span className='cover cv2' />
-            <div><b>La Pierre du Vent</b><small>Fantasy · Tome 1</small></div>
-          </div>
-          <div className='card-book c3'>
-            <span className='cover cv3' />
-            <div><b>Orbite silencieuse</b><small>Science-fiction</small></div>
-          </div>
-          <div className='bottom-nav'>
-            <i /><i /><i className='fab' /><i /><i />
-          </div>
-        </div>
-      </div>
-    </section>
+    <span className={`cover ${className}`}>
+      {lines.map((l) => (
+        <b key={l}>{l}</b>
+      ))}
+    </span>
   );
 }
 
-function Features() {
+function Phone() {
   return (
-    <section id='fonctions' className='section'>
-      <div className='section-head reveal'>
-        <p className='eyebrow'>Fonctionnalités</p>
-        <h2>Tout ce qu'il faut, rien de superflu</h2>
+    <div className="phone" aria-hidden="true">
+      <div className="screen">
+        <div className="s-top">
+          <div className="s-hello">
+            <span className="s-avatar" />
+            <div>
+              <small>Bonjour</small>
+              <strong>Que lisez-vous ?</strong>
+            </div>
+          </div>
+          <span className="s-bell"><Icon name="bell" size={16} /></span>
+        </div>
+
+        <div className="s-feature">
+          <div>
+            <span className="s-pill">À LA UNE</span>
+            <strong>Les saisons de Léa</strong>
+            <small>Un été au bord de la mer</small>
+          </div>
+          <Cover className="c1" lines={['Les saisons', 'de Léa']} />
+        </div>
+
+        <p className="s-label">NOUVEAUTÉS</p>
+        <div className="s-row">
+          <div><Cover className="c2" lines={['La Pierre', 'du Vent']} /><small>La Pierre du Vent</small></div>
+          <div><Cover className="c3" lines={['Orbite', 'silencieuse']} /><small>Orbite silencieuse</small></div>
+          <div><Cover className="c4" lines={['La maison', 'au bord', 'du lac']} /><small>La maison au lac</small></div>
+        </div>
+
+        <div className="s-nav">
+          <span className="on"><Icon name="home" size={19} /></span>
+          <span><Icon name="compass" size={19} /></span>
+          <span className="fab"><Icon name="pen" size={20} /></span>
+          <span><Icon name="library" size={19} /></span>
+          <span><Icon name="user" size={19} /></span>
+        </div>
       </div>
-      <div className='grid-3'>
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <main>
+      <section className="hero">
+        <div className="hero-text">
+          <p className="tag">READ. WRITE. CONNECT.</p>
+          <h1>
+            Lisez. Écrivez. <em>Partagez.</em>
+          </h1>
+          <p className="lead">La bibliothèque sociale, dans votre poche.</p>
+          <div className="cta">
+            <a className="btn btn-amber" href={APK_URL}>
+              <Icon name="download" size={20} /> Télécharger pour Android
+            </a>
+            <p className="note">Gratuit · Android 5.0 et plus</p>
+          </div>
+        </div>
+        <div className="hero-visual">
+          <Phone />
+        </div>
+      </section>
+
+      <section className="features" aria-label="Ce que vous pouvez faire">
         {FEATURES.map((f) => (
-          <article className='feature reveal' key={f.title}>
-            <span className='ico'>{f.icon}</span>
-            <h3>{f.title}</h3>
-            <p>{f.text}</p>
+          <article className="feature" key={f.title}>
+            <span className="ico"><Icon name={f.icon} size={24} /></span>
+            <div>
+              <h2>{f.title}</h2>
+              <p>{f.text}</p>
+            </div>
           </article>
         ))}
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function ReaderSection() {
-  return (
-    <section className='section split'>
-      <div className='reveal'>
-        <p className='eyebrow'>Lecture</p>
-        <h2>Une page, comme dans un vrai livre</h2>
-        <p>Le texte est mis en page pour être lu : police Lora, texte justifié, lettrine au début des chapitres, et un tournage de page qui se courbe sous le doigt.</p>
-        <ul className='checks'>
-          {READER_POINTS.map((p) => (
-            <li key={p}>{p}</li>
-          ))}
-        </ul>
-      </div>
-      <div className='page-mock reveal' aria-hidden='true'>
-        <span className='chap'>Chapitre 1</span>
-        <h4>Le premier matin</h4>
-        <p>
-          <span className='drop'>L</span>e vent de la côte avait changé pendant la nuit. Léa le sentit avant même d'ouvrir la fenêtre, comme on sent une promesse.
-        </p>
-        <p>Elle descendit sans bruit jusqu'à la plage, où les mouettes se disputaient déjà les restes de la marée.</p>
-        <p className='pg'>1</p>
-      </div>
-    </section>
-  );
-}
-
-function Authors() {
-  return (
-    <section id='auteurs' className='section'>
-      <div className='section-head reveal'>
-        <p className='eyebrow'>Pour les auteurs</p>
-        <h2>Publiez, suivez et faites grandir votre lectorat</h2>
-      </div>
-      <div className='grid-3'>
-        {STEPS.map((s) => (
-          <article className='step reveal' key={s.n}>
-            <span className='num'>{s.n}</span>
-            <h3>{s.title}</h3>
-            <p>{s.text}</p>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Download() {
-  return (
-    <section id='telecharger' className='section reveal'>
-      <div className='dl-card'>
-        <img src='/litora-icon.svg' alt='Icône de LITORA' width='92' height='92' />
-        <div>
-          <p className='eyebrow'>Télécharger</p>
-          <h2>LITORA pour Android</h2>
-          <p className='muted'>Version {VERSION} · Android 5.0 et plus · Gratuit</p>
-          <div className='dl-actions'>
-            <a className='btn btn-primary' href={APK_URL} download rel='noopener'>Télécharger l'APK</a>
-            <button className='btn btn-ghost' type='button' disabled>iOS · bientôt</button>
-          </div>
-          <p className='fine'>Ouvrez le fichier téléchargé et autorisez l'installation depuis votre navigateur. Une mise à jour s'installe par-dessus la version précédente.</p>
+      <section id="telecharger" className="band">
+        <img src="/litora-icon.png" alt="Icône de LITORA" width="76" height="76" />
+        <div className="band-text">
+          <h2>Prêt à lire ?</h2>
+          <p>Téléchargez LITORA, c'est gratuit.</p>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function Mayelia() {
-  return (
-    <section id='mayelia' className='section mayelia reveal'>
-      <img src='/mayelia-mark.svg' alt='Logo Mayelia' width='64' height='64' />
-      <div>
-        <p className='eyebrow'>Édité par</p>
-        <h2>Mayelia</h2>
-        <p>Une bibliothèque d'applications utiles, simples et soignées. LITORA est la première. Fondateur et développeur : Blessing Lusakumunu (BLESS | DEV 404).</p>
-        <div className='socials'>
-          {SOCIALS.map(([label, href]) => (
-            <a key={label} href={href} target='_blank' rel='noopener'>{label}</a>
-          ))}
-        </div>
-      </div>
-    </section>
+        <a className="btn btn-amber" href={APK_URL}>
+          <Icon name="download" size={20} /> Télécharger
+        </a>
+      </section>
+    </main>
   );
 }
 
 function Legal() {
   return (
-    <section className='section legal-block'>
-      <h2>Mentions et règles</h2>
-      <div className='legal-card' id='confidentialite'>
-        <h3>Confidentialité</h3>
-        <p>Nous collectons le minimum nécessaire : e-mail et pseudo pour le compte, contenus publiés, progression de lecture et informations techniques indispensables. Vos données sont hébergées de façon sécurisée et ne sont ni vendues ni utilisées pour de la publicité. La suppression du compte efface vos données personnelles.</p>
-      </div>
-      <div className='legal-card' id='regles'>
-        <h3>Règles de la communauté</h3>
-        <p>Pas de harcèlement, de menaces, de discours haineux, de contenus sexuels impliquant des mineurs, de désinformation délibérée, d'usurpation d'identité ni de spam. Les signalements sont examinés et peuvent entraîner le retrait d'un contenu ou la suspension d'un compte.</p>
-      </div>
-      <div className='legal-card' id='publication'>
-        <h3>Conditions de publication</h3>
-        <p>Vous ne publiez que des œuvres dont vous détenez les droits, ou pour lesquelles vous avez une autorisation. Vous gardez vos droits d'auteur. Les livres du domaine public proviennent de Project Gutenberg et d'Internet Archive. Un livre n'est téléchargeable que si vous l'autorisez.</p>
-        <p className='fine'>Résumé à faire relire par un juriste avant toute diffusion large. Contact : {CONTACT}</p>
-      </div>
-    </section>
+    <main className="legal">
+      <a className="back" href="#/">← Retour</a>
+      <h1>Confidentialité et règles</h1>
+      <article className="card">
+        <h2>Vos données</h2>
+        <ul>
+          <li>Seulement votre e-mail et votre pseudo pour créer le compte.</li>
+          <li>Jamais vendues, aucune publicité.</li>
+          <li>Supprimer votre compte efface vos données.</li>
+        </ul>
+      </article>
+      <article className="card">
+        <h2>La communauté</h2>
+        <ul>
+          <li>Respect avant tout : ni harcèlement, ni menaces, ni haine.</li>
+          <li>Tout contenu peut être signalé et examiné.</li>
+        </ul>
+      </article>
+      <article className="card">
+        <h2>Publication</h2>
+        <ul>
+          <li>Publiez vos œuvres, ou celles que vous avez le droit de publier.</li>
+          <li>Vous gardez tous vos droits d'auteur.</li>
+          <li>Un livre n'est téléchargeable que si son auteur l'autorise.</li>
+        </ul>
+      </article>
+      <p className="legal-contact">Une question ? <a href={`mailto:${CONTACT}`}>{CONTACT}</a></p>
+    </main>
   );
 }
 
 function Footer() {
   return (
-    <footer className='foot'>
-      <div className='foot-brand'>
-        <img src='/litora-icon.svg' alt='' width='28' height='28' /> LITORA · <span>READ. WRITE. CONNECT.</span>
+    <footer className="foot">
+      <div className="foot-brand">
+        <img src="/mayelia-logo.png" alt="" width="34" height="34" />
+        <span>Une application <b>Mayelia</b></span>
       </div>
-      <nav aria-label='Liens légaux'>
-        <a href='#confidentialite'>Confidentialité</a>
-        <a href='#regles'>Règles</a>
-        <a href='#publication'>Publication</a>
-        <a href={`mailto:${CONTACT}`}>Contact</a>
+      <nav className="foot-links" aria-label="Liens">
+        {LINKS.map(([label, href]) => (
+          <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener">{label}</a>
+        ))}
+        <a href="#/legal">Confidentialité</a>
       </nav>
-      <p>© 2026 Mayelia. Tous droits réservés.</p>
+      <p className="copy">© 2026 Mayelia</p>
     </footer>
   );
 }
 
 export default function App() {
-  const [, toggleTheme] = useTheme();
-  useReveal();
+  const route = useRoute();
   return (
-    <>
-      <div className='bg' aria-hidden='true'>
-        <span className='blob b1' />
-        <span className='blob b2' />
-        <span className='blob b3' />
-      </div>
-      <Nav onToggleTheme={toggleTheme} />
-      <main id='top'>
-        <Hero />
-        <Features />
-        <ReaderSection />
-        <Authors />
-        <Download />
-        <Mayelia />
-        <Legal />
-      </main>
+    <div className="page">
+      <Nav />
+      {route === 'legal' ? <Legal /> : <Home />}
       <Footer />
-    </>
+    </div>
   );
 }
