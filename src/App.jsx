@@ -220,17 +220,31 @@ function WhyLitora() {
 }
 
 function MockHome() {
+  const genres = ['Romance', 'Horreur', 'Aventure', 'Histoire'];
+  const books = [['La Pierre', 'du Vent', 'c2'], ['Orbite', 'silencieuse', 'c3'], ['La maison', 'au bord du lac', 'c4']];
   return (
     <div className="mock mock-home">
-      <div className="m-top"><span className="m-avatar" /><div><small>Bonjour</small><strong>Que lisez-vous ?</strong></div></div>
-      <div className="m-feature">
-        <div><span className="m-pill">À LA UNE</span><strong>Les saisons de Léa</strong><small>Un été au bord de la mer</small></div>
-        <span className="m-cover c1" />
+      <div className="m-hero">
+        <div className="m-top">
+          <span className="m-avatar" />
+          <div className="m-hello"><small>Bonjour</small><strong>Blessing</strong></div>
+          <span className="m-bell" />
+        </div>
+        <div className="m-search"><span className="m-search-ic" />Rechercher un livre…<span className="m-tune" /></div>
       </div>
-      <p className="m-label">NOUVEAUTÉS</p>
-      <div className="m-row"><span className="m-cover c2" /><span className="m-cover c3" /><span className="m-cover c4" /></div>
+      <div className="m-genres">{genres.map((g) => <span key={g}>{g}</span>)}</div>
+      <div className="m-feature">
+        <span className="m-pill">À LA UNE</span>
+        <div className="m-feature-row">
+          <div><strong>Les saisons de Léa</strong><small>Un été au bord de la mer</small></div>
+          <span className="m-cover c1" />
+        </div>
+      </div>
+      <div className="m-stats"><span><b>3</b>lus</span><span><b>12</b>en cours</span><span><b>1</b>publiés</span></div>
       <p className="m-label">CONTINUER LA LECTURE</p>
-      <div className="m-bar"><span className="m-bar-fill" /></div>
+      <div className="m-continue"><span className="m-cover c2 sm" /><div><strong>La Pierre du Vent</strong><small>Chapitre 4 · 64 %</small><div className="m-bar"><span className="m-bar-fill" style={{ width: '64%' }} /></div></div></div>
+      <p className="m-label">NOUVEAUTÉS</p>
+      <div className="m-row">{books.map(([a, b, c]) => <div key={a}><span className={`m-cover ${c}`}><b>{a}</b><b>{b}</b></span></div>)}</div>
       <div className="m-nav"><span className="on" /><span /><span className="fab" /><span /><span /></div>
     </div>
   );
@@ -276,10 +290,6 @@ function MockPublish() {
 function Captures() {
   const shots = [
     { kind: 'real', src: '/captures/profil.jpg', alt: 'Page de profil LITORA', caption: 'Votre profil : bio, abonnés, livres.' },
-    { kind: 'mock', node: <MockHome />, caption: "L'accueil : la une et les nouveautés." },
-    { kind: 'mock', node: <MockReader />, caption: 'Le lecteur : une vraie mise en page.' },
-    { kind: 'mock', node: <MockLibrary />, caption: 'Votre bibliothèque, même hors ligne.' },
-    { kind: 'mock', node: <MockPublish />, caption: 'Publier un chapitre en quelques secondes.' },
   ];
   return (
     <section className="captures" aria-label="Aperçu de l'application">
